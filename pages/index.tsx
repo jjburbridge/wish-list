@@ -1,15 +1,18 @@
+/* eslint-disable react/jsx-key */
 import Head from 'next/head'
 import Image from 'next/image'
 import { GetStaticProps, NextPage } from 'next/types'
+import { OgProduct } from '../components/og/product'
+import { getClient } from '../services/sanity/client'
+import { getAllPRoductsQuery } from '../services/sanity/queries/product'
 import { scrape } from '../services/scraper'
 import styles from '../styles/Home.module.css'
 
 type HomePageProps = {
-  og: any
+  productData: any
 }
 
-export const Home: NextPage<HomePageProps> = ({og}) => {
-  {console.log(og)}
+export const Home: NextPage<HomePageProps> = ({productData}) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -20,44 +23,11 @@ export const Home: NextPage<HomePageProps> = ({og}) => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to My Wish List
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          {productData.map((product: any) => <OgProduct {...product} />)}
         </div>
       </main>
 
@@ -79,11 +49,23 @@ export const Home: NextPage<HomePageProps> = ({og}) => {
 
 export const getStaticProps: GetStaticProps<{}> = async () => {
 
-  const og = await scrape('https://www.johnlewis.com/john-lewis-anyday-full-slippers/grey/p109348724?size=9');
+  const sanityClient = getClient();
+  
+  const products = await sanityClient.fetch(getAllPRoductsQuery);
+
+  const productPromieses = Promise.all(products.map(async (product: any) => {
+    const og = await scrape(product.url);
+    return {
+      ...product,
+      ...og
+    }
+  }))
+
+  const productData = await productPromieses;
 
   return {
     props: {
-      og
+      productData
     }
   }
 }
