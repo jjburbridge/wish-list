@@ -9,23 +9,30 @@ export type OgProductProps = {
   title: string,
   image: string,
   site: string,
-  description: string
+  description: string,
+  origin: string,
 }
 
-export const OgProduct: FC<OgProductProps> = ({comments,
+export const OgProduct: FC<OgProductProps> = ({
+  comments,
   qty,
   url,
   title,
   image,
   site,
-  description}) => {
+  description,
+  origin
+}) => {
     return (
       <div className={styles.card}>
         <a href={url} target='_blank' rel="noreferrer">
-          <h4>{site} - {title}</h4>
+          <img src={`${origin}/favicon.ico`} alt={title} width={35} height={35}/>
+          <h2>{site} - {title}</h2>
           <img src={image} alt={title} width={250} height={250}/>
           <p>{description}</p>
-          <h4>Qty: {qty}</h4>
+          <h2>Qty: {qty}</h2>
+          {comments && (<h2>Info:</h2>)}
+          {comments &&(<p>{comments}</p>)}
         </a>
       </div>
     )

@@ -3,7 +3,6 @@ import { JSDOM } from "jsdom";
 export const scrape = async (url: string) => {
   const dom = await JSDOM.fromURL(url);
   const doc = dom.window.document;
-
   const title =
     doc.querySelector("meta[property='og:title']")?.getAttribute("content") ??
     null;
@@ -18,7 +17,6 @@ export const scrape = async (url: string) => {
     doc
       .querySelector("meta[property='og:description']")
       ?.getAttribute("content") ?? null;
-  console.log({ url, title, image, site, description });
   return {
     title,
     image,

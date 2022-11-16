@@ -55,9 +55,11 @@ export const getStaticProps: GetStaticProps<{}> = async () => {
 
   const productPromieses = Promise.all(products.map(async (product: any) => {
     const og = await scrape(product.url);
+    const origin = new URL(product.url).origin;
     return {
       ...product,
-      ...og
+      ...og,
+      origin
     }
   }))
 
