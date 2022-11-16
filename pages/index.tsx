@@ -1,8 +1,15 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { GetStaticProps, NextPage } from 'next/types'
+import { scrape } from '../services/scraper'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+type HomePageProps = {
+  og: any
+}
+
+export const Home: NextPage<HomePageProps> = ({og}) => {
+  {console.log(og)}
   return (
     <div className={styles.container}>
       <Head>
@@ -69,3 +76,16 @@ export default function Home() {
     </div>
   )
 }
+
+export const getStaticProps: GetStaticProps<{}> = async () => {
+
+  const og = await scrape('https://www.johnlewis.com/john-lewis-anyday-full-slippers/grey/p109348724?size=9');
+
+  return {
+    props: {
+      og
+    }
+  }
+}
+
+export default Home;
