@@ -74,6 +74,7 @@
 }
 
 .card {
+  display: grid;
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
@@ -87,7 +88,7 @@
 
 .card img {
   float:left;
-  padding-right: 1.5rem
+  margin-right: 1.5rem
 }
 
 .card:hover,

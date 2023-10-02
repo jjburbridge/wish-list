@@ -10,6 +10,8 @@ export type OgProductProps = {
   image: string,
   site: string,
   description: string,
+  price: string;
+  icon: string;
   origin: string,
 }
 
@@ -21,15 +23,21 @@ export const OgProduct: FC<OgProductProps> = ({
   image,
   site,
   description,
+  price,
+  icon,
   origin
 }) => {
+    console.log(icon, origin);
+    const urlRegex = new RegExp(/^\/\/.*/);
+    const iconPath = urlRegex.test(icon) ? icon : `${origin}${icon}`
     return (
       <div className={styles.card}>
         <a href={url} target='_blank' rel="noreferrer">
-          <img src={`${origin}/favicon.ico`} alt={title} width={35} height={35}/>
+          <img src={iconPath} alt={title} width={35} height={35}/>
           <h2>{site} - {title}</h2>
           <img src={image} alt={title} width={250} height={250}/>
           <p>{description}</p>
+          <h2>Price: {price}</h2>
           <h2>Qty: {qty}</h2>
           {comments && (<h2>Info:</h2>)}
           {comments &&(<p>{comments}</p>)}
